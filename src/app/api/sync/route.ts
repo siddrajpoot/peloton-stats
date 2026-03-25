@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { fetchAllRides } from "@/lib/peloton";
 
+// Allow up to 5 minutes for initial sync (many API calls)
+export const maxDuration = 300;
+
 export async function POST(request: NextRequest) {
   // Verify cron secret if this is a cron invocation
   const { searchParams } = new URL(request.url);
