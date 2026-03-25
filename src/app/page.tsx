@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 import { Header } from "@/components/header";
 import { SummaryCards } from "@/components/summary-cards";
 import { TrendChartsSection } from "@/components/trend-charts-section";
+import { PersonalRecords } from "@/components/personal-records";
+import { RideTable } from "@/components/ride-table";
 
 export default function Dashboard() {
   const [lastSynced, setLastSynced] = useState<string | null>(null);
@@ -29,6 +31,8 @@ export default function Dashboard() {
       <main className="mx-auto max-w-7xl space-y-8 p-6">
         <SummaryCards refreshKey={refreshKey} />
         <TrendChartsSection refreshKey={refreshKey} />
+        <PersonalRecords refreshKey={refreshKey} />
+        <RideTable refreshKey={refreshKey} />
       </main>
     </div>
   );
