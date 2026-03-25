@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Header } from "@/components/header";
+import { SummaryCards } from "@/components/summary-cards";
 
 export default function Dashboard() {
   const [lastSynced, setLastSynced] = useState<string | null>(null);
@@ -25,8 +26,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-background">
       <Header lastSynced={lastSynced} onSyncComplete={handleSyncComplete} />
       <main className="mx-auto max-w-7xl space-y-8 p-6">
-        {/* Summary cards, trend charts, ride table will go here */}
-        <p className="text-muted-foreground">Dashboard sections coming soon...</p>
+        <SummaryCards refreshKey={refreshKey} />
       </main>
     </div>
   );
