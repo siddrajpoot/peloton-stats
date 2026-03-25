@@ -69,37 +69,37 @@ Line/area charts showing progression over the full ride history (not filtered by
 
 ### `rides` table
 
-| Column | Type | Description |
-|--------|------|-------------|
-| id | uuid | Primary key |
-| peloton_ride_id | text | Unique ID from Peloton (for dedup) |
-| title | text | Ride/class title |
-| instructor | text | Instructor name |
-| class_type | text | e.g. cycling, power zone, HIIT |
-| duration_seconds | integer | Ride duration |
-| started_at | timestamptz | When the ride started |
-| total_output | integer | Total output in kJ |
-| avg_cadence | real | Average cadence RPM |
-| max_cadence | real | Max cadence RPM |
-| avg_resistance | real | Average resistance % |
-| max_resistance | real | Max resistance % |
-| avg_heart_rate | real | Average heart rate BPM |
-| max_heart_rate | real | Max heart rate BPM |
-| calories | real | Calories burned |
-| distance | real | Distance in miles |
-| avg_speed | real | Average speed |
-| max_speed | real | Max speed |
-| created_at | timestamptz | Row creation timestamp |
+| Column            | Type        | Description                        |
+| ----------------- | ----------- | ---------------------------------- |
+| id                | uuid        | Primary key                        |
+| peloton\_ride\_id | text        | Unique ID from Peloton (for dedup) |
+| title             | text        | Ride/class title                   |
+| instructor        | text        | Instructor name                    |
+| class\_type       | text        | e.g. cycling, power zone, HIIT     |
+| duration\_seconds | integer     | Ride duration                      |
+| started\_at       | timestamptz | When the ride started              |
+| total\_output     | integer     | Total output in kJ                 |
+| avg\_cadence      | real        | Average cadence RPM                |
+| max\_cadence      | real        | Max cadence RPM                    |
+| avg\_resistance   | real        | Average resistance %               |
+| max\_resistance   | real        | Max resistance %                   |
+| avg\_heart\_rate  | real        | Average heart rate BPM             |
+| max\_heart\_rate  | real        | Max heart rate BPM                 |
+| calories          | real        | Calories burned                    |
+| distance          | real        | Distance in miles                  |
+| avg\_speed        | real        | Average speed                      |
+| max\_speed        | real        | Max speed                          |
+| created\_at       | timestamptz | Row creation timestamp             |
 
 ### `sync_log` table
 
-| Column | Type | Description |
-|--------|------|-------------|
-| id | uuid | Primary key |
-| synced_at | timestamptz | When the sync ran |
-| status | text | success / error |
-| rides_added | integer | Number of new rides ingested |
-| error_message | text | Error details if failed |
+| Column         | Type        | Description                  |
+| -------------- | ----------- | ---------------------------- |
+| id             | uuid        | Primary key                  |
+| synced\_at     | timestamptz | When the sync ran            |
+| status         | text        | success / error              |
+| rides\_added   | integer     | Number of new rides ingested |
+| error\_message | text        | Error details if failed      |
 
 ## Sync Behavior
 
@@ -116,29 +116,27 @@ Line/area charts showing progression over the full ride history (not filtered by
 
 ## Project Structure
 
-```
-src/
-  app/
-    page.tsx              — dashboard page
-    layout.tsx            — root layout
-    api/
-      sync/route.ts       — manual + cron sync endpoint
-      rides/route.ts      — query rides + aggregations
-  components/
-    header.tsx            — title, sync status, sync button
-    summary-cards.tsx     — stat cards with time range filter
-    growth-indicator.tsx  — composite growth % card
-    trend-charts.tsx      — line/area charts for metrics over time
-    weekly-volume.tsx     — bar chart for weekly volume
-    personal-records.tsx  — all-time bests display
-    ride-table.tsx        — sortable/filterable ride history
-  lib/
-    peloton.ts            — Peloton API client (auth + fetch rides)
-    supabase.ts           — Supabase client initialization
-    queries.ts            — SQL aggregation helpers
-    growth.ts             — growth indicator calculation logic
-vercel.json               — cron job configuration
-```
+	src/
+	  app/
+	    page.tsx              — dashboard page
+	    layout.tsx            — root layout
+	    api/
+	      sync/route.ts       — manual + cron sync endpoint
+	      rides/route.ts      — query rides + aggregations
+	  components/
+	    header.tsx            — title, sync status, sync button
+	    summary-cards.tsx     — stat cards with time range filter
+	    growth-indicator.tsx  — composite growth % card
+	    trend-charts.tsx      — line/area charts for metrics over time
+	    weekly-volume.tsx     — bar chart for weekly volume
+	    personal-records.tsx  — all-time bests display
+	    ride-table.tsx        — sortable/filterable ride history
+	  lib/
+	    peloton.ts            — Peloton API client (auth + fetch rides)
+	    supabase.ts           — Supabase client initialization
+	    queries.ts            — SQL aggregation helpers
+	    growth.ts             — growth indicator calculation logic
+	vercel.json               — cron job configuration
 
 ## Growth Indicator Details
 
