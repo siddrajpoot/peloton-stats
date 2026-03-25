@@ -1,22 +1,27 @@
-const PELOTON_AUTH_URL = "https://api.onepeloton.com/auth/login";
+const PELOTON_OAUTH_URL = "https://auth.onepeloton.com/oauth/token";
 const PELOTON_API_BASE = "https://api.onepeloton.com";
+const PELOTON_CLIENT_ID = "mgsmWCD0A8Qn6uz6mmqI6qeBNHH9IPwS";
 
-interface PelotonSession {
-  sessionId: string;
-  userId: string;
+interface PelotonAuth {
+  accessToken: string;
+  refreshToken: string;
+  userId: string | null;
 }
 
-let cachedSession: PelotonSession | null = null;
+let cachedAuth: PelotonAuth | null = null;
 
-async function authenticate(): Promise<PelotonSession> {
-  if (cachedSession) return cachedSession;
+async function authenticate(): Promise<PelotonAuth> {
+  if (cachedAuth) return cachedAuth;
 
-  const res = await fetch(PELOTON_AUTH_URL, {
+  const res = await fetch(PELOTON_OAUTH_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      username_or_email: process.env.PELOTON_USERNAME,
-      password: process.env.PELOTON_PASSWORD,
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "password",
+      client_id: PELOTON_CLIENT_ID,
+      scope: "offline_access openid",
+      username: process.env.PELOTON_USERNAME!,
+      password: process.env.PELOTON_PASSWORD!,
     }),
   });
 
@@ -26,32 +31,72 @@ async function authenticate(): Promise<PelotonSession> {
   }
 
   const data = await res.json();
-  cachedSession = {
-    sessionId: data.session_id,
-    userId: data.user_id,
+  cachedAuth = {
+    accessToken: data.access_token,
+    refreshToken: data.refresh_token,
+    userId: null,
   };
-  return cachedSession;
+
+  // Fetch user ID from /api/me
+  const meRes = await fetch(`${PELOTON_API_BASE}/api/me`, {
+    headers: { Authorization: `Bearer ${data.access_token}` },
+  });
+  if (meRes.ok) {
+    const me = await meRes.json();
+    cachedAuth.userId = me.id;
+  }
+
+  return cachedAuth;
 }
 
-function clearSession() {
-  cachedSession = null;
+async function refreshAuth(): Promise<PelotonAuth> {
+  if (!cachedAuth?.refreshToken) {
+    cachedAuth = null;
+    return authenticate();
+  }
+
+  const res = await fetch(PELOTON_OAUTH_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "refresh_token",
+      client_id: PELOTON_CLIENT_ID,
+      refresh_token: cachedAuth.refreshToken,
+    }),
+  });
+
+  if (!res.ok) {
+    cachedAuth = null;
+    return authenticate();
+  }
+
+  const data = await res.json();
+  cachedAuth = {
+    ...cachedAuth,
+    accessToken: data.access_token,
+    refreshToken: data.refresh_token ?? cachedAuth.refreshToken,
+  };
+  return cachedAuth;
+}
+
+function clearAuth() {
+  cachedAuth = null;
 }
 
 async function pelotonFetch(path: string): Promise<Response> {
-  const session = await authenticate();
+  const auth = await authenticate();
   const res = await fetch(`${PELOTON_API_BASE}${path}`, {
     headers: {
-      Cookie: `peloton_session_id=${session.sessionId}`,
+      Authorization: `Bearer ${auth.accessToken}`,
       "Content-Type": "application/json",
     },
   });
 
   if (res.status === 401) {
-    clearSession();
-    const newSession = await authenticate();
+    const newAuth = await refreshAuth();
     return fetch(`${PELOTON_API_BASE}${path}`, {
       headers: {
-        Cookie: `peloton_session_id=${newSession.sessionId}`,
+        Authorization: `Bearer ${newAuth.accessToken}`,
         "Content-Type": "application/json",
       },
     });
@@ -141,14 +186,17 @@ async function fetchPerformance(
 export async function fetchAllRides(
   since?: Date
 ): Promise<PelotonRideData[]> {
-  const session = await authenticate();
+  const auth = await authenticate();
+  if (!auth.userId) {
+    throw new Error("Failed to get Peloton user ID");
+  }
   const rides: PelotonRideData[] = [];
   let page = 0;
   let hasMore = true;
 
   while (hasMore) {
     const res = await pelotonFetch(
-      `/api/user/${session.userId}/workouts?joins=ride,ride.instructor&limit=50&page=${page}&sort_by=-created`
+      `/api/user/${auth.userId}/workouts?joins=ride,ride.instructor&limit=50&page=${page}&sort_by=-created`
     );
 
     if (!res.ok) {
