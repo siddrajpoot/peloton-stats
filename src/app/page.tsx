@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Header } from "@/components/header";
 import { SummaryCards } from "@/components/summary-cards";
+import { TrendChartsSection } from "@/components/trend-charts-section";
 
 export default function Dashboard() {
   const [lastSynced, setLastSynced] = useState<string | null>(null);
@@ -27,6 +28,7 @@ export default function Dashboard() {
       <Header lastSynced={lastSynced} onSyncComplete={handleSyncComplete} />
       <main className="mx-auto max-w-7xl space-y-8 p-6">
         <SummaryCards refreshKey={refreshKey} />
+        <TrendChartsSection refreshKey={refreshKey} />
       </main>
     </div>
   );
