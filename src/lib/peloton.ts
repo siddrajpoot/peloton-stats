@@ -244,7 +244,7 @@ export async function fetchAllRides(
         max_cadence: cadence?.max_value ?? null,
         avg_resistance: findAvgSummary(perf.average_summaries, "avg_resistance"),
         max_resistance: resistance?.max_value ?? null,
-        avg_heart_rate: findAvgSummary(perf.average_summaries, "avg_heart_rate"),
+        avg_heart_rate: heartRate?.average_value ?? null,
         max_heart_rate: heartRate?.max_value ?? null,
         calories: findSummary(perf.summaries, "calories"),
         distance: findSummary(perf.summaries, "distance"),
@@ -261,3 +261,4 @@ export async function fetchAllRides(
 
   return rides;
 }
+
