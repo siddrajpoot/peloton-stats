@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { formatDuration, formatDate } from "@/lib/utils";
 import type { PersonalRecord } from "@/lib/types";
 
@@ -11,14 +12,38 @@ interface PersonalRecordsProps {
 
 export function PersonalRecords({ refreshKey }: PersonalRecordsProps) {
   const [records, setRecords] = useState<PersonalRecord[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
+      setLoading(true);
       const res = await fetch("/api/rides?view=records");
       setRecords(await res.json());
+      setLoading(false);
     }
     load();
   }, [refreshKey]);
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-6 w-36" />
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Card key={i}>
+              <CardHeader className="pb-2">
+                <Skeleton className="h-4 w-28" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-8 w-20" />
+                <Skeleton className="mt-1 h-3 w-16" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   if (records.length === 0) return null;
 

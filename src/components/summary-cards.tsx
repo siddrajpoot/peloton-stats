@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { GrowthIndicator } from "@/components/growth-indicator";
 import { TimeRangeSelector } from "@/components/time-range-selector";
 import { calculateGrowth } from "@/lib/growth";
@@ -104,9 +105,11 @@ export function SummaryCards({ refreshKey }: SummaryCardsProps) {
   const [timeRange, setTimeRange] = useState<TimeRange>("week");
   const [cards, setCards] = useState<CardDef[]>([]);
   const [growth, setGrowth] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
+      setLoading(true);
       const now = new Date();
 
       if (timeRange === "all") {
@@ -136,11 +139,30 @@ export function SummaryCards({ refreshKey }: SummaryCardsProps) {
         setCards(buildCards(current, previous));
         setGrowth(calculateGrowth(current, previous));
       }
+      setLoading(false);
     }
     load();
   }, [timeRange, refreshKey]);
 
-  if (cards.length === 0) return null;
+  if (loading || cards.length === 0) {
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-9 w-72" />
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Card key={i}>
+              <CardHeader className="pb-2">
+                <Skeleton className="h-4 w-20" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-8 w-24" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">

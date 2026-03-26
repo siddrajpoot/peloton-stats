@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrendChart } from "@/components/trend-chart";
 import { WeeklyVolumeChart } from "@/components/weekly-volume-chart";
@@ -15,9 +16,11 @@ export function TrendChartsSection({ refreshKey }: TrendChartsSectionProps) {
   const [rawRides, setRawRides] = useState<Ride[]>([]);
   const [aggregatedData, setAggregatedData] = useState<AggregatedPoint[]>([]);
   const [weeklyData, setWeeklyData] = useState<AggregatedPoint[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
+      setLoading(true);
       // Always fetch weekly data for the volume chart
       const weeklyRes = await fetch("/api/rides?view=weekly");
       setWeeklyData(await weeklyRes.json());
@@ -29,6 +32,7 @@ export function TrendChartsSection({ refreshKey }: TrendChartsSectionProps) {
         const res = await fetch(`/api/rides?view=${granularity}`);
         setAggregatedData(await res.json());
       }
+      setLoading(false);
     }
     load();
   }, [granularity, refreshKey]);
@@ -51,6 +55,29 @@ export function TrendChartsSection({ refreshKey }: TrendChartsSectionProps) {
         }));
 
   const hasHeartRate = chartData.some((d) => d.heart_rate != null);
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-6 w-20" />
+          <Skeleton className="h-9 w-72" />
+        </div>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i}>
+              <Skeleton className="mb-2 h-4 w-32" />
+              <Skeleton className="h-[250px] w-full rounded-md" />
+            </div>
+          ))}
+        </div>
+        <div>
+          <Skeleton className="mb-2 h-4 w-32" />
+          <Skeleton className="h-[250px] w-full rounded-md" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

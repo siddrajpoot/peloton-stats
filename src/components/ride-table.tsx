@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -31,15 +32,18 @@ export function RideTable({ refreshKey }: RideTableProps) {
   const [rides, setRides] = useState<Ride[]>([]);
   const [sortField, setSortField] = useState<SortField>("started_at");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
+      setLoading(true);
       const params = new URLSearchParams({
         sort: sortField,
         order: sortOrder,
       });
       const res = await fetch(`/api/rides?${params}`);
       setRides(await res.json());
+      setLoading(false);
     }
     load();
   }, [sortField, sortOrder, refreshKey]);
@@ -55,6 +59,21 @@ export function RideTable({ refreshKey }: RideTableProps) {
 
   const sortIndicator = (field: SortField) =>
     field === sortField ? (sortOrder === "asc" ? " ↑" : " ↓") : "";
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-6 w-28" />
+        <div className="rounded-md border">
+          <div className="p-4 space-y-3">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <Skeleton key={i} className="h-10 w-full" />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const columns: Array<{ field: SortField; label: string }> = [
     { field: "started_at", label: "Date" },
