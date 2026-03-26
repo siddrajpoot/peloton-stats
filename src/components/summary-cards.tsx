@@ -166,7 +166,7 @@ export function SummaryCards({ refreshKey }: SummaryCardsProps) {
               <p className="text-2xl font-bold">{card.value}</p>
               {card.diff && (
                 <p
-                  className={`text-xs ${
+                  className={`text-xs font-bold ${
                     card.isPositive
                       ? "text-green-600"
                       : card.isPositive === false
