@@ -101,21 +101,21 @@ export function TrendChartsSection({ refreshKey }: TrendChartsSectionProps) {
           dataKey="output"
           label="Output"
           unit="kJ"
-          color="hsl(var(--chart-1))"
+          color="#E0736E"
         />
         <TrendChart
           data={chartData}
           dataKey="cadence"
           label="Avg Cadence"
           unit="RPM"
-          color="hsl(var(--chart-2))"
+          color="#6BB8D6"
         />
         <TrendChart
           data={chartData}
           dataKey="resistance"
           label="Avg Resistance"
           unit="%"
-          color="hsl(var(--chart-3))"
+          color="#7ACC8A"
         />
         {hasHeartRate && (
           <TrendChart
@@ -123,7 +123,7 @@ export function TrendChartsSection({ refreshKey }: TrendChartsSectionProps) {
             dataKey="heart_rate"
             label="Avg Heart Rate"
             unit="BPM"
-            color="hsl(var(--chart-4))"
+            color="#B48ADB"
           />
         )}
       </div>

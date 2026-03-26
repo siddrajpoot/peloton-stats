@@ -17,11 +17,11 @@ export function WeeklyVolumeChart({ data }: WeeklyVolumeChartProps) {
   const chartConfig = {
     ride_count: {
       label: "Rides",
-      color: "hsl(var(--chart-1))",
+      color: "#E0736E",
     },
     total_output: {
       label: "Total Output (kJ)",
-      color: "hsl(var(--chart-2))",
+      color: "#E0736E",
     },
   };
 
@@ -46,14 +46,14 @@ export function WeeklyVolumeChart({ data }: WeeklyVolumeChartProps) {
           <Bar
             yAxisId="left"
             dataKey="ride_count"
-            fill="hsl(var(--chart-1))"
+            fill="#E0736E"
             opacity={0.8}
             radius={[4, 4, 0, 0]}
           />
           <Bar
             yAxisId="right"
             dataKey="total_output"
-            fill="hsl(var(--chart-1))"
+            fill="#E0736E"
             opacity={0.3}
             radius={[4, 4, 0, 0]}
           />

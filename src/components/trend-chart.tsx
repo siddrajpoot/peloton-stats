@@ -28,7 +28,7 @@ export function TrendChart({
   dataKey,
   label,
   unit,
-  color = "hsl(var(--chart-1))",
+  color = "#E0736E",
 }: TrendChartProps) {
   // Compute rolling average (7-ride window)
   const withRollingAvg = data.map((point, i) => {
