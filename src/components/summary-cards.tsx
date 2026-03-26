@@ -109,15 +109,26 @@ export function SummaryCards({ refreshKey }: SummaryCardsProps) {
 
   useEffect(() => {
     async function load() {
-      setLoading(true);
+      if (cards.length === 0) setLoading(true);
       const now = new Date();
 
       if (timeRange === "all") {
         const data = await fetchSummary();
         setCards(buildCards(data, null));
         setGrowth(null);
+      } else if (timeRange === "year") {
+        const yearStart = new Date(now.getFullYear(), 0, 1);
+        const lastYearStart = new Date(now.getFullYear() - 1, 0, 1);
+        const lastYearEnd = new Date(now.getFullYear() - 1, 11, 31, 23, 59, 59);
+
+        const [current, previous] = await Promise.all([
+          fetchSummary(yearStart.toISOString(), now.toISOString()),
+          fetchSummary(lastYearStart.toISOString(), lastYearEnd.toISOString()),
+        ]);
+        setCards(buildCards(current, previous));
+        setGrowth(calculateGrowth(current, previous));
       } else {
-        const days = timeRange === "week" ? 7 : timeRange === "month" ? 30 : 365;
+        const days = timeRange === "week" ? 7 : 30;
         const start = new Date(now);
         start.setDate(now.getDate() - days);
         const prevStart = new Date(now);
@@ -165,7 +176,7 @@ export function SummaryCards({ refreshKey }: SummaryCardsProps) {
           timeRange={
             timeRange === "week" ? "7 days" :
             timeRange === "month" ? "30 days" :
-            timeRange === "year" ? "365 days" :
+            timeRange === "year" ? "year" :
             "7 days"
           }
         />
