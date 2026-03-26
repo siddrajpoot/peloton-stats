@@ -114,17 +114,8 @@ export function SummaryCards({ refreshKey }: SummaryCardsProps) {
 
       if (timeRange === "all") {
         const data = await fetchSummary();
-        // Growth + diffs: rolling 7 days vs prior 7 days
-        const d7 = new Date(now);
-        d7.setDate(now.getDate() - 7);
-        const d14 = new Date(now);
-        d14.setDate(now.getDate() - 14);
-        const [cur, prev] = await Promise.all([
-          fetchSummary(d7.toISOString(), now.toISOString()),
-          fetchSummary(d14.toISOString(), d7.toISOString()),
-        ]);
         setCards(buildCards(data, null));
-        setGrowth(calculateGrowth(cur, prev));
+        setGrowth(null);
       } else {
         const days = timeRange === "week" ? 7 : timeRange === "month" ? 30 : 365;
         const start = new Date(now);
