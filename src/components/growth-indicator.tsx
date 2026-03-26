@@ -22,7 +22,7 @@ function GrowthTitle() {
             <span className="text-xs opacity-50">ⓘ</span>
           </CardTitle>
         </TooltipTrigger>
-        <TooltipContent side="bottom">
+        <TooltipContent side="top">
           {GROWTH_DESCRIPTION}
         </TooltipContent>
       </Tooltip>
