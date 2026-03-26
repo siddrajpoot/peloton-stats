@@ -3,7 +3,6 @@
 import {
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent,
 } from "@/components/ui/chart";
 import {
   XAxis,
@@ -13,7 +12,7 @@ import {
   ComposedChart,
   Line,
 } from "recharts";
-import { formatDateShort } from "@/lib/utils";
+import { formatDate, formatDateShort } from "@/lib/utils";
 
 interface TrendChartProps {
   data: Array<Record<string, unknown>>;
@@ -23,6 +22,48 @@ interface TrendChartProps {
   color?: string;
 }
 
+function CustomTooltip({
+  active,
+  payload,
+  dataKey,
+  label,
+  unit,
+  color,
+}: {
+  active?: boolean;
+  payload?: Array<{ payload: Record<string, unknown> }>;
+  dataKey: string;
+  label: string;
+  unit: string;
+  color: string;
+}) {
+  if (!active || !payload?.length) return null;
+  const point = payload[0].payload;
+  const value = point[dataKey] as number | null;
+  const avg = point.rollingAvg as number | null;
+  const date = point.date as string;
+
+  return (
+    <div className="rounded-md border bg-popover px-3 py-2 text-xs text-popover-foreground shadow-md">
+      <p className="font-medium mb-1">{formatDate(date)}</p>
+      {value != null && (
+        <div className="flex items-center gap-2">
+          <span className="size-2 rounded-full" style={{ backgroundColor: "white" }} />
+          <span className="text-muted-foreground">{label}:</span>
+          <span className="font-medium">{Math.round(value)} {unit}</span>
+        </div>
+      )}
+      {avg != null && (
+        <div className="flex items-center gap-2">
+          <span className="size-2 rounded-full" style={{ backgroundColor: color }} />
+          <span className="text-muted-foreground">7-ride avg:</span>
+          <span className="font-medium">{Math.round(avg * 10) / 10} {unit}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function TrendChart({
   data,
   dataKey,
@@ -30,7 +71,6 @@ export function TrendChart({
   unit,
   color = "#E0736E",
 }: TrendChartProps) {
-  // Compute rolling average (7-ride window)
   const withRollingAvg = data.map((point, i) => {
     const window = data.slice(Math.max(0, i - 6), i + 1);
     const validValues = window
@@ -62,8 +102,11 @@ export function TrendChart({
           <YAxis tick={{ fontSize: 12 }} />
           <ChartTooltip
             content={
-              <ChartTooltipContent
-                labelFormatter={(value: string) => formatDateShort(value)}
+              <CustomTooltip
+                dataKey={dataKey}
+                label={label}
+                unit={unit}
+                color={color}
               />
             }
           />
