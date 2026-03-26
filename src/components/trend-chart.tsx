@@ -60,7 +60,13 @@ export function TrendChart({
             tickFormatter={(v: string) => formatDateShort(v)}
           />
           <YAxis tick={{ fontSize: 12 }} />
-          <ChartTooltip content={<ChartTooltipContent />} />
+          <ChartTooltip
+            content={
+              <ChartTooltipContent
+                labelFormatter={(value: string) => formatDateShort(value)}
+              />
+            }
+          />
           <Scatter
             dataKey={dataKey}
             fill="white"

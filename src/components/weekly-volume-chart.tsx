@@ -42,7 +42,13 @@ export function WeeklyVolumeChart({ data }: WeeklyVolumeChartProps) {
             orientation="right"
             tick={{ fontSize: 12 }}
           />
-          <ChartTooltip content={<ChartTooltipContent />} />
+          <ChartTooltip
+            content={
+              <ChartTooltipContent
+                labelFormatter={(value: string) => formatDateShort(value)}
+              />
+            }
+          />
           <Bar
             yAxisId="left"
             dataKey="ride_count"
