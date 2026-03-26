@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GrowthIndicator } from "@/components/growth-indicator";
 import { TimeRangeSelector } from "@/components/time-range-selector";
 import { calculateGrowth } from "@/lib/growth";
-import { getDateRange, formatDuration, formatNumber } from "@/lib/utils";
+import { formatDuration, formatNumber } from "@/lib/utils";
 import type { TimeRange, SummaryStats } from "@/lib/types";
 
 interface SummaryCardsProps {
@@ -27,31 +27,35 @@ export function SummaryCards({ refreshKey }: SummaryCardsProps) {
 
   useEffect(() => {
     async function load() {
-      // Fetch stats for the selected time range
+      const now = new Date();
+
       if (timeRange === "all") {
         const data = await fetchSummary();
         setStats(data);
+        // Growth: rolling 7 days vs prior 7 days
+        const d7 = new Date(now);
+        d7.setDate(now.getDate() - 7);
+        const d14 = new Date(now);
+        d14.setDate(now.getDate() - 14);
+        const [cur, prev] = await Promise.all([
+          fetchSummary(d7.toISOString(), now.toISOString()),
+          fetchSummary(d14.toISOString(), d7.toISOString()),
+        ]);
+        setGrowth(calculateGrowth(cur, prev));
       } else {
-        const ranges = getDateRange(timeRange);
-        const data = await fetchSummary(
-          ranges.current.start.toISOString(),
-          ranges.current.end.toISOString()
-        );
-        setStats(data);
+        const days = timeRange === "week" ? 7 : timeRange === "month" ? 30 : 365;
+        const start = new Date(now);
+        start.setDate(now.getDate() - days);
+        const prevStart = new Date(now);
+        prevStart.setDate(now.getDate() - days * 2);
+
+        const [current, previous] = await Promise.all([
+          fetchSummary(start.toISOString(), now.toISOString()),
+          fetchSummary(prevStart.toISOString(), start.toISOString()),
+        ]);
+        setStats(current);
+        setGrowth(calculateGrowth(current, previous));
       }
-
-      // Growth is always rolling 7 days vs prior 7 days
-      const now = new Date();
-      const sevenDaysAgo = new Date(now);
-      sevenDaysAgo.setDate(now.getDate() - 7);
-      const fourteenDaysAgo = new Date(now);
-      fourteenDaysAgo.setDate(now.getDate() - 14);
-
-      const [current7d, previous7d] = await Promise.all([
-        fetchSummary(sevenDaysAgo.toISOString(), now.toISOString()),
-        fetchSummary(fourteenDaysAgo.toISOString(), sevenDaysAgo.toISOString()),
-      ]);
-      setGrowth(calculateGrowth(current7d, previous7d));
     }
     load();
   }, [timeRange, refreshKey]);
@@ -86,7 +90,15 @@ export function SummaryCards({ refreshKey }: SummaryCardsProps) {
     <div className="space-y-4">
       <TimeRangeSelector value={timeRange} onChange={setTimeRange} />
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-4">
-        <GrowthIndicator percentage={growth} timeRange="7 days" />
+        <GrowthIndicator
+          percentage={growth}
+          timeRange={
+            timeRange === "week" ? "7 days" :
+            timeRange === "month" ? "30 days" :
+            timeRange === "year" ? "365 days" :
+            "7 days"
+          }
+        />
         {cards.map((card) => (
           <Card key={card.title}>
             <CardHeader className="pb-2">
