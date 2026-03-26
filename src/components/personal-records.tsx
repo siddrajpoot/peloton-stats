@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatDuration } from "@/lib/utils";
+import { formatDuration, formatDate } from "@/lib/utils";
 import type { PersonalRecord } from "@/lib/types";
 
 interface PersonalRecordsProps {
@@ -41,7 +41,7 @@ export function PersonalRecords({ refreshKey }: PersonalRecordsProps) {
             <CardContent>
               <p className="text-2xl font-bold">{formatValue(record)}</p>
               <p className="text-xs text-muted-foreground">
-                {new Date(record.date).toLocaleDateString()}
+                {formatDate(record.date)}
               </p>
             </CardContent>
           </Card>

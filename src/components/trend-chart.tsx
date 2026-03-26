@@ -13,6 +13,7 @@ import {
   ComposedChart,
   Line,
 } from "recharts";
+import { formatDateShort } from "@/lib/utils";
 
 interface TrendChartProps {
   data: Array<Record<string, unknown>>;
@@ -56,12 +57,7 @@ export function TrendChart({
           <XAxis
             dataKey="date"
             tick={{ fontSize: 12 }}
-            tickFormatter={(v: string) =>
-              new Date(v).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-              })
-            }
+            tickFormatter={(v: string) => formatDateShort(v)}
           />
           <YAxis tick={{ fontSize: 12 }} />
           <ChartTooltip content={<ChartTooltipContent />} />

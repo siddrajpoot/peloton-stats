@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { formatDuration } from "@/lib/utils";
+import { formatDuration, formatDate } from "@/lib/utils";
 import type { Ride } from "@/lib/types";
 
 interface RideTableProps {
@@ -93,7 +93,7 @@ export function RideTable({ refreshKey }: RideTableProps) {
             {rides.map((ride) => (
               <TableRow key={ride.id}>
                 <TableCell>
-                  {new Date(ride.started_at).toLocaleDateString()}
+                  {formatDate(ride.started_at)}
                 </TableCell>
                 <TableCell>{formatDuration(ride.duration_seconds)}</TableCell>
                 <TableCell>{ride.total_output}</TableCell>

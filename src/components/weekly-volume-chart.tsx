@@ -6,6 +6,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { formatDateShort } from "@/lib/utils";
 import type { AggregatedPoint } from "@/lib/types";
 
 interface WeeklyVolumeChartProps {
@@ -33,12 +34,7 @@ export function WeeklyVolumeChart({ data }: WeeklyVolumeChartProps) {
           <XAxis
             dataKey="date"
             tick={{ fontSize: 12 }}
-            tickFormatter={(v: string) =>
-              new Date(v).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-              })
-            }
+            tickFormatter={(v: string) => formatDateShort(v)}
           />
           <YAxis yAxisId="left" tick={{ fontSize: 12 }} />
           <YAxis

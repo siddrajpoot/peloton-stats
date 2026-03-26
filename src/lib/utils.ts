@@ -20,6 +20,21 @@ export function formatNumber(n: number, decimals = 0): string {
   });
 }
 
+export function formatDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  const month = d.toLocaleDateString("en-US", { month: "short" });
+  const day = d.getDate();
+  const year = String(d.getFullYear()).slice(-2);
+  return `${month} ${day}, '${year}`;
+}
+
+export function formatDateShort(dateStr: string): string {
+  const d = new Date(dateStr);
+  const month = d.toLocaleDateString("en-US", { month: "short" });
+  const day = d.getDate();
+  return `${month} ${day}`;
+}
+
 export function getDateRange(range: "week" | "month" | "year"): {
   current: { start: Date; end: Date };
   previous: { start: Date; end: Date };
