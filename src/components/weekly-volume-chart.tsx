@@ -46,14 +46,14 @@ export function WeeklyVolumeChart({ data }: WeeklyVolumeChartProps) {
           <Bar
             yAxisId="left"
             dataKey="ride_count"
-            fill="white"
-            opacity={0.6}
+            fill="hsl(var(--chart-1))"
+            opacity={0.8}
             radius={[4, 4, 0, 0]}
           />
           <Bar
             yAxisId="right"
             dataKey="total_output"
-            fill="white"
+            fill="hsl(var(--chart-1))"
             opacity={0.3}
             radius={[4, 4, 0, 0]}
           />
