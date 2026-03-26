@@ -1,8 +1,33 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { GROWTH_DESCRIPTION } from "@/lib/growth";
 
 interface GrowthIndicatorProps {
   percentage: number | null;
   timeRange: string;
+}
+
+function GrowthTitle() {
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger>
+          <CardTitle className="text-sm font-medium text-muted-foreground cursor-help inline-flex items-center gap-1">
+            Growth
+            <span className="text-xs opacity-50">ⓘ</span>
+          </CardTitle>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">
+          {GROWTH_DESCRIPTION}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
 }
 
 export function GrowthIndicator({
@@ -13,9 +38,7 @@ export function GrowthIndicator({
     return (
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            Growth
-          </CardTitle>
+          <GrowthTitle />
         </CardHeader>
         <CardContent>
           <p className="text-2xl font-bold text-muted-foreground">—</p>
@@ -32,9 +55,7 @@ export function GrowthIndicator({
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          Growth
-        </CardTitle>
+        <GrowthTitle />
       </CardHeader>
       <CardContent>
         <p className={`text-2xl font-bold ${color}`}>
