@@ -67,8 +67,8 @@ export function TrendChart({
           <ChartTooltip content={<ChartTooltipContent />} />
           <Scatter
             dataKey={dataKey}
-            fill={color}
-            opacity={0.3}
+            fill="white"
+            opacity={0.4}
             r={2}
           />
           <Line
