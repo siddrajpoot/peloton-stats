@@ -15,17 +15,17 @@ interface GrowthIndicatorProps {
 function GrowthTitle() {
   return (
     <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger className="text-left">
-          <CardTitle className="text-sm font-medium text-muted-foreground cursor-help inline-flex items-center gap-1">
-            Growth
+      <CardTitle className="text-sm font-medium text-muted-foreground inline-flex items-center gap-1">
+        Growth
+        <Tooltip>
+          <TooltipTrigger className="cursor-help">
             <span className="text-xs opacity-50">ⓘ</span>
-          </CardTitle>
-        </TooltipTrigger>
-        <TooltipContent side="top">
-          {GROWTH_DESCRIPTION}
-        </TooltipContent>
-      </Tooltip>
+          </TooltipTrigger>
+          <TooltipContent side="top">
+            {GROWTH_DESCRIPTION}
+          </TooltipContent>
+        </Tooltip>
+      </CardTitle>
     </TooltipProvider>
   );
 }
