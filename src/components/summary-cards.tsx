@@ -155,7 +155,8 @@ export function SummaryCards({ refreshKey }: SummaryCardsProps) {
                 <Skeleton className="h-4 w-20" />
               </CardHeader>
               <CardContent>
-                <Skeleton className="h-8 w-24" />
+                <Skeleton className="h-8 w-24 mb-1" />
+                <Skeleton className="h-3 w-16" />
               </CardContent>
             </Card>
           ))}
