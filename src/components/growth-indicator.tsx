@@ -27,7 +27,7 @@ export function GrowthIndicator({
 
   const isPositive = percentage >= 0;
   const arrow = isPositive ? "↑" : "↓";
-  const color = isPositive ? "text-emerald-400" : "text-red-600";
+  const color = isPositive ? "text-emerald-300/70" : "text-red-600";
 
   return (
     <Card>

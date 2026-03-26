@@ -168,7 +168,7 @@ export function SummaryCards({ refreshKey }: SummaryCardsProps) {
                 <p
                   className={`text-xs font-bold ${
                     card.isPositive
-                      ? "text-emerald-400"
+                      ? "text-emerald-300/70"
                       : card.isPositive === false
                       ? "text-red-600"
                       : "text-muted-foreground"
