@@ -208,9 +208,11 @@ export async function fetchAllRides(
 
     for (const workout of workouts) {
       // Only include cycling workouts that are complete
+      const rideDuration = workout.ride?.duration ?? 0;
       if (
         workout.fitness_discipline !== "cycling" ||
-        workout.status !== "COMPLETE"
+        workout.status !== "COMPLETE" ||
+        rideDuration < 360
       ) {
         continue;
       }

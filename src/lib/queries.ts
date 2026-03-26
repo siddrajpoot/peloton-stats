@@ -6,6 +6,8 @@ import type {
   AggregatedPoint,
 } from "@/lib/types";
 
+const MIN_RIDE_DURATION = 360;
+
 export async function getRides(options?: {
   from?: string;
   to?: string;
@@ -16,6 +18,7 @@ export async function getRides(options?: {
   let query = supabase
     .from("rides")
     .select("*")
+    .gte("duration_seconds", MIN_RIDE_DURATION)
     .order(options?.sortBy ?? "started_at", {
       ascending: options?.order === "asc",
     });
@@ -33,7 +36,7 @@ export async function getSummaryStats(
   from?: string,
   to?: string
 ): Promise<SummaryStats> {
-  let query = supabase.from("rides").select("*");
+  let query = supabase.from("rides").select("*").gte("duration_seconds", MIN_RIDE_DURATION);
   if (from) query = query.gte("started_at", from);
   if (to) query = query.lte("started_at", to);
 
@@ -88,7 +91,8 @@ export async function getSummaryStats(
 export async function getPersonalRecords(): Promise<PersonalRecord[]> {
   const { data, error } = await supabase
     .from("rides")
-    .select("*");
+    .select("*")
+    .gte("duration_seconds", MIN_RIDE_DURATION);
   if (error) throw error;
 
   const rides = data as Ride[];
@@ -157,6 +161,7 @@ export async function getAggregatedRides(
   let query = supabase
     .from("rides")
     .select("*")
+    .gte("duration_seconds", MIN_RIDE_DURATION)
     .order("started_at", { ascending: true });
 
   if (from) query = query.gte("started_at", from);
