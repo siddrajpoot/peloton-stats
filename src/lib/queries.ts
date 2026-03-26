@@ -6,7 +6,7 @@ import type {
   AggregatedPoint,
 } from "@/lib/types";
 
-const MIN_RIDE_DURATION = 360;
+const MIN_RIDE_DURATION = 420;
 const MIN_RIDE_OUTPUT = 10;
 
 export async function getRides(options?: {

@@ -213,7 +213,7 @@ export async function fetchAllRides(
       if (
         workout.fitness_discipline !== "cycling" ||
         workout.status !== "COMPLETE" ||
-        rideDuration < 360 ||
+        rideDuration < 420 ||
         rideOutput < 10
       ) {
         continue;
