@@ -16,7 +16,7 @@ function GrowthTitle() {
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger>
+        <TooltipTrigger className="text-left">
           <CardTitle className="text-sm font-medium text-muted-foreground cursor-help inline-flex items-center gap-1">
             Growth
             <span className="text-xs opacity-50">ⓘ</span>
