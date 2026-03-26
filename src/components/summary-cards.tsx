@@ -119,11 +119,11 @@ export function SummaryCards({ refreshKey }: SummaryCardsProps) {
       } else if (timeRange === "year") {
         const yearStart = new Date(now.getFullYear(), 0, 1);
         const lastYearStart = new Date(now.getFullYear() - 1, 0, 1);
-        const lastYearEnd = new Date(now.getFullYear() - 1, 11, 31, 23, 59, 59);
+        const lastYearSameDay = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate(), now.getHours(), now.getMinutes());
 
         const [current, previous] = await Promise.all([
           fetchSummary(yearStart.toISOString(), now.toISOString()),
-          fetchSummary(lastYearStart.toISOString(), lastYearEnd.toISOString()),
+          fetchSummary(lastYearStart.toISOString(), lastYearSameDay.toISOString()),
         ]);
         setCards(buildCards(current, previous));
         setGrowth(calculateGrowth(current, previous));
