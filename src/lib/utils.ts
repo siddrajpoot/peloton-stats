@@ -22,10 +22,10 @@ export function formatNumber(n: number, decimals = 0): string {
 
 export function formatDate(dateStr: string): string {
   const d = new Date(dateStr);
-  const month = d.toLocaleDateString("en-US", { month: "short" });
-  const day = d.getDate();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
   const year = String(d.getFullYear()).slice(-2);
-  return `${month} ${day}, '${year}`;
+  return `${month}/${day}/${year}`;
 }
 
 export function formatDateShort(dateStr: string): string {
