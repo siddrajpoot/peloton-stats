@@ -19,9 +19,7 @@ export function GrowthIndicator({
         </CardHeader>
         <CardContent>
           <p className="text-2xl font-bold text-muted-foreground">—</p>
-          <p className="text-xs text-muted-foreground">
-            {timeRange === "all" ? "N/A for all time" : "No prior data"}
-          </p>
+          <p className="text-xs text-muted-foreground">No prior data</p>
         </CardContent>
       </Card>
     );

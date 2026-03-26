@@ -27,25 +27,31 @@ export function SummaryCards({ refreshKey }: SummaryCardsProps) {
 
   useEffect(() => {
     async function load() {
+      // Fetch stats for the selected time range
       if (timeRange === "all") {
         const data = await fetchSummary();
         setStats(data);
-        setGrowth(null);
       } else {
         const ranges = getDateRange(timeRange);
-        const [current, previous] = await Promise.all([
-          fetchSummary(
-            ranges.current.start.toISOString(),
-            ranges.current.end.toISOString()
-          ),
-          fetchSummary(
-            ranges.previous.start.toISOString(),
-            ranges.previous.end.toISOString()
-          ),
-        ]);
-        setStats(current);
-        setGrowth(calculateGrowth(current, previous));
+        const data = await fetchSummary(
+          ranges.current.start.toISOString(),
+          ranges.current.end.toISOString()
+        );
+        setStats(data);
       }
+
+      // Growth is always rolling 7 days vs prior 7 days
+      const now = new Date();
+      const sevenDaysAgo = new Date(now);
+      sevenDaysAgo.setDate(now.getDate() - 7);
+      const fourteenDaysAgo = new Date(now);
+      fourteenDaysAgo.setDate(now.getDate() - 14);
+
+      const [current7d, previous7d] = await Promise.all([
+        fetchSummary(sevenDaysAgo.toISOString(), now.toISOString()),
+        fetchSummary(fourteenDaysAgo.toISOString(), sevenDaysAgo.toISOString()),
+      ]);
+      setGrowth(calculateGrowth(current7d, previous7d));
     }
     load();
   }, [timeRange, refreshKey]);
@@ -80,7 +86,7 @@ export function SummaryCards({ refreshKey }: SummaryCardsProps) {
     <div className="space-y-4">
       <TimeRangeSelector value={timeRange} onChange={setTimeRange} />
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-4">
-        <GrowthIndicator percentage={growth} timeRange={timeRange} />
+        <GrowthIndicator percentage={growth} timeRange="7 days" />
         {cards.map((card) => (
           <Card key={card.title}>
             <CardHeader className="pb-2">
